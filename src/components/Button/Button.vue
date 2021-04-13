@@ -59,11 +59,11 @@ export default {
 	props: {
 
 		/**
-		 * Type of button, possible values are 'outlined', 'contained' and 'text'
+		 * Pass in false for icon-only buttons that don't need a background circle.
 		 */
-		type: {
-			type: String,
-			default: 'outlined',
+		hasBackground: {
+			type: Boolean,
+			default: true,
 		},
 
 		/**
@@ -116,11 +116,11 @@ export default {
 			return this.$slots.default !== undefined
 		},
 
+		// Classes applied to the button element
 		buttonClassObject() {
 			return {
-				'nc-button--outlined': this.type === 'outlined',
-				'nc-button--contained': this.type === 'contained',
-				'nc-button--text': this.type === 'text',
+				'nc-button--contained': this.hasBackground,
+				'nc-button--no-background': !this.hasBackground,
 				// If icon only, some additional css rules are required
 				'nc-button--icon-only': !this.hasText && this.hasIcon,
 				[this.color]: this.color !== '',
@@ -129,6 +129,14 @@ export default {
 			}
 
 		},
+	},
+
+	mounted() {
+		// Check if text button is being used without the background and throw
+		// error if it's the case
+		if (!this.hasBackground && this.text) {
+			console.error('Buttons with text must have a background')
+		}
 	},
 
 	methods: {
@@ -203,42 +211,34 @@ export default {
 		}
 	}
 
-	// ### Outlined button
-	&--outlined {
-		// Only one type of outlined button for now
-		background-color: var(--color-main-background);
-		color: var(--color-primary);
-		border: 2px solid var(--color-primary);
-		&:hover {
-			background-color: var(--color-primary-light) !important;
-			border: 2px solid var(--color-primary) !important; // TODO: remove server rules targeting this;;
-		}
-	}
-
 	// ### Contained button
 	&--contained {
 		// 2 variants, regular and primary
 		// regular:
-		background-color: var(--color-background-dark);
-		border-color: var(--color-background-dark);
+		color: #0082C9;
+		background-color: #E1F4FF;
+		border-color: #E1F4FF;
 		&:hover {
-			background-color: var(--color-background-hover);
-			border-color: var(--color-background-hover);
+			color: #005381;
+			background-color: #C9ECFF;
+			border-color:s #C9ECFF;
 		}
 		// Variants
 		&.primary {
 			background-color: var(--color-primary-element);
 			border-color: var(--color-primary-element);
 			color: var(--color-primary-text);
+			background-image: linear-gradient(40deg, #0082c9 0%, #1699e1 100%);
 			&:hover {
-				background-color: var(--color-primary-element-light);
-				border-color: var(--color-primary-element-light);
+				background-color: var(--color-primary);
+				border-color: var(--color-primary);
+				background-image: linear-gradient(40deg, #0277b6 0%, #1592d4 100%);
 			}
 		}
 	}
 
-	// ### Text button
-	&--text {
+	// ### Icon only button with now background
+	&--no-background {
 		border: none;
 		background: transparent;
 		// 2 variants, regular and primary
