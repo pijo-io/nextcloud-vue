@@ -57,15 +57,6 @@ export default {
 	},
 
 	props: {
-
-		/**
-		 * Pass in false for icon-only buttons that don't need a background circle.
-		 */
-		hasBackground: {
-			type: Boolean,
-			default: true,
-		},
-
 		/**
 		 * The text of the button
 		 */
@@ -107,7 +98,6 @@ export default {
 	},
 
 	computed: {
-
 		hasText() {
 			return this.text
 		},
@@ -119,23 +109,19 @@ export default {
 		// Classes applied to the button element
 		buttonClassObject() {
 			return {
-				'nc-button--contained': this.hasBackground,
-				'nc-button--no-background': !this.hasBackground,
+				
+				'nc-button': !this.iconOnly,
 				// If icon only, some additional css rules are required
-				'nc-button--icon-only': !this.hasText && this.hasIcon,
+				'nc-button--icon-only': this.iconOnly,
 				[this.color]: this.color !== '',
 				wide: this.wide,
 				tabbed: this.tabbed,
 			}
 
 		},
-	},
 
-	mounted() {
-		// Check if text button is being used without the background and throw
-		// error if it's the case
-		if (!this.hasBackground && this.text) {
-			console.error('Buttons with text must have a background')
+		iconOnly() {
+			return this.hasIcon && !this.hasText
 		}
 	},
 
@@ -182,7 +168,7 @@ export default {
 	}
 
 	&__wrapper {
-		padding: 0 20px;
+		padding: 0 4px;
 		display: inline-flex;
 		align-items: center;
 		justify-content: space-around;
@@ -237,26 +223,7 @@ export default {
 		}
 	}
 
-	// ### Icon only button with now background
-	&--no-background {
-		border: none;
-		background: transparent;
-		// 2 variants, regular and primary
-		// regular:
-		color: var(--color-main-text);
-		&:hover,
-		&:focus {
-			background-color: var(--color-background-hover) !important;
-		}
-		&.primary {
-			color: var(--color-primary);
-			&:hover {
-				color: var(--color-primary) !important;
-				background-color: var(--color-primary-light) !important;
-			}
-		}
-	}
-
+	// Wide button spans the whole width of the container
 	&.wide {
 		width: 100%;
 	}
@@ -264,7 +231,7 @@ export default {
 	// We use around our buttons instead of an outline, so that the added "border"
 	// coincides with the border of the element.
 	&.tabbed {
-		box-shadow: 0px 0px 0px 2px var(--color-text-light);
+		box-shadow: 0px 0px 0px 2px var(--color-main-text);
 	}
 }
 </style>
